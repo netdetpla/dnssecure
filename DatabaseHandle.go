@@ -30,7 +30,7 @@ func getRightValue(domains []string) (rightRecords []*RightRecord, err error) {
 	//TODO 备份
 	db, err := sql.Open(
 		"mysql",
-		"root:password@tcp(localhost:3306)/cncert_initiative_probe_system")
+		"root:123456@tcp(192.168.226.11:3306)/cncert_initiative_probe_system")
 	if err != nil {
 		return nil, err
 	}
