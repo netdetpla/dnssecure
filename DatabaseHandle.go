@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
-	"os"
 	"strings"
 )
 
@@ -56,11 +55,6 @@ func getRightValue(domains []string) (rightRecords []*RightRecord, err error) {
 			rightCNames: SplitCNames(rightCNamesStr),
 		})
 		rightRecords = append(rightRecords, rightRecord)
-
-		if err != nil {
-			os.Exit(1)
-		}
-
 	}
 	return
 }
