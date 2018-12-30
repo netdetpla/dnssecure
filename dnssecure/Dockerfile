@@ -7,4 +7,6 @@ RUN mkdir -p $GOPATH/src/golang.org/x/ \
     && go get github.com/go-sql-driver/mysql \
     && go get github.com/sparrc/go-ping
 
-CMD ["go build -o /dnssecure/bin/dnssecure-bin /dnssecure/dnssecure/src/*.go"]
+ADD ["go-build.sh", "/"]
+
+WORKDIR /
