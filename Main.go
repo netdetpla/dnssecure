@@ -1,21 +1,25 @@
 package main
 
-import "os"
+import (
+	"os"
+	"fmt"
+)
 
 func main() {
 	err := os.Mkdir(AppstatusPath, 0777)
-	if !os.IsExist(err) {
+	if err != nil && !os.IsExist(err) {
+		fmt.Println(err.Error())
 		os.Exit(10)
 	}
 	err = os.Mkdir(LogPath, 0777)
-	if !os.IsExist(err) {
+	if err != nil && !os.IsExist(err) {
 		WriteError2Appstatus(err.Error(), 9)
 	}
 	//网络检查
 	netCheckFlag, err := NetCheck()
 	if err != nil || !netCheckFlag{
 		ConnectFail()
-		WriteError2Appstatus(err.Error(), 2)
+		WriteError2Appstatus("Can not connect to the Internet.", 2)
 	}
 	//任务开始
 	TaskStart()

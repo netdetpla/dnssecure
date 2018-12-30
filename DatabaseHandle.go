@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"strings"
+	//"fmt"
 )
 
 type RightRecord struct {
@@ -35,12 +36,19 @@ func getRightValue(domains []string) (rightRecords []*RightRecord, err error) {
 	}
 	//查询数据
 	querySQL := "SELECT CNAME, A FROM domain_library WHERE domain_name=?"
+	//fmt.Println(len(domains))
 	for _, domain := range domains {
+		if len(domain) == 0 {
+			continue
+		}
 		rows, err := db.Query(querySQL, domain)
+		defer rows.Close()
 		if err != nil {
 			return nil, err
 		}
-		rows.Next()
+		if !rows.Next() {
+			continue
+		}
 		var (
 			rightCNamesStr string
 			rightAsStr     string
@@ -49,11 +57,11 @@ func getRightValue(domains []string) (rightRecords []*RightRecord, err error) {
 		if err != nil {
 			return nil, err
 		}
-		rightRecord := new(RightRecord{
+		rightRecord := &RightRecord{
 			domain:      domain,
 			rightAs:     SplitAs(rightAsStr),
 			rightCNames: SplitCNames(rightCNamesStr),
-		})
+		}
 		rightRecords = append(rightRecords, rightRecord)
 	}
 	return

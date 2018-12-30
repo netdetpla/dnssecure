@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"io/ioutil"
 	"strings"
+	"fmt"
 )
 
 const ConfPath = "/tmp/conf/busi.conf"
@@ -26,6 +27,7 @@ type Task struct {
 }
 
 func GetTaskConfig() (task *Task, err error) {
+	task = new(Task)
 	taskConfigBase64, err := ioutil.ReadFile(ConfPath)
 	if err != nil {
         return nil, err
@@ -35,12 +37,14 @@ func GetTaskConfig() (task *Task, err error) {
         return nil, err
     }
 	taskConfig := strings.Split(string(taskConfigB), ",")
+	fmt.Println(taskConfig)
 
 	task.taskID = taskConfig[0]
 
 	//组合域名、递归服务器、正确值
 	domains := strings.Split(taskConfig[1], "+")
 	rightRecords, err := getRightValue(domains)
+	fmt.Print(rightRecords)
 	if err != nil {
         return nil, err
     }

@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/sparrc/go-ping"
 	"time"
+	"fmt"
 )
 
 func PingCheck(host string) (packetLoss float64, err error) {
@@ -12,10 +13,11 @@ func PingCheck(host string) (packetLoss float64, err error) {
 	}
 	pinger.SetPrivileged(true)
 	pinger.Count = 10
-	pinger.Timeout = time.Duration(1000)
+	pinger.Timeout = time.Duration(1*time.Second)
 	pinger.Run()
 	stats := pinger.Statistics()
 	packetLoss = stats.PacketLoss
+	fmt.Println(packetLoss)
 	return
 }
 

@@ -4,6 +4,7 @@ import (
 	"github.com/miekg/dns"
 	"runtime"
 	"strings"
+	"fmt"
 )
 
 var quit = make(chan error)
@@ -11,6 +12,7 @@ var quit = make(chan error)
 func ParseRR(rrs []dns.RR) (as []string, cNames []string) {
 	for _, rr := range rrs {
 		rrElements := strings.Split(rr.String(), "\t")
+		fmt.Println(rrElements)
 		if len(rrElements) == 5 {
 			if rrElements[3] == "CNAME" {
 				cNames = append(cNames, rrElements[4])
@@ -41,6 +43,7 @@ func SendDNSQuery(record *Record) {
 
 func ControlDNSQueryRoutine(tasks *Task) (err error){
 	runtime.GOMAXPROCS(runtime.NumCPU())
+	fmt.Println(tasks.records)
 	for _, record := range tasks.records {
 		go SendDNSQuery(record)
 	}

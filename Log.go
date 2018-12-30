@@ -83,6 +83,7 @@ func WriteError2Appstatus(errorInfo string, errorCode int) {
 	TaskFail()
 	err := ioutil.WriteFile(AppstatusPath + "1", []byte(errorInfo), 0644)
 	if err != nil {
-		os.Exit(errorCode)
+		os.Exit(9)
 	}
+	os.Exit(errorCode)
 }
