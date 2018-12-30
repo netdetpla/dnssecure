@@ -12,19 +12,25 @@ const FALSE = -1
 var compareQuit = make(chan int)
 
 func CompareList(detects []string, rights []string) (correctFlag int) {
+	InfoLog("Compare")
+	fmt.Println(detects)
+	fmt.Println(rights)
 	correctFlag = TRUE
-	for detect := range detects {
+	for _, detect := range detects {
 		singleCorrectFlag := false
-		for right := range rights {
+		for _, right := range rights {
+			fmt.Println(detect, right)
 			if detect == right {
 				singleCorrectFlag = true
 				break
 			}
 		}
+		fmt.Println(singleCorrectFlag)
 		if !singleCorrectFlag {
 			correctFlag = FALSE
 		}
 	}
+	fmt.Println(correctFlag)
 	return
 }
 
@@ -33,6 +39,8 @@ func Compare(record *Record) {
 	compareCNameFlag := len(record.rightRecord.rightCNames) > 0
 	detectAFlag := len(record.detectAs) > 0
 	detectCNameFlag := len(record.detectCNames) > 0
+	InfoLog("Compare-flag")
+	fmt.Println(len(record.rightRecord.rightAs))
 	//比对字段类型
 	//A/CNAME
 	if compareAFlag && compareCNameFlag {
@@ -99,7 +107,7 @@ func Compare(record *Record) {
 		return
 	} else if correctAFlag != FALSE && correctCNameFlag == FALSE {
 		//CNAME错误
-		record.result = "0-11-1-0-00"
+		record.result = "0-11-1-1-01"
 		return
 	} else if correctAFlag == FALSE && correctCNameFlag == FALSE {
 		//A记录与CNAME均错误
