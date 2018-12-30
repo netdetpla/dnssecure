@@ -28,11 +28,22 @@ func CompareList(detects []string, rights []string) (correctFlag int) {
 	return
 }
 
+func CheckEmptyStr(strList []string) (isEmpty bool){
+	isEmpty = false
+	for _, s := range strList {
+		if len(s) != 0{
+			isEmpty = true
+			return
+		}
+	}
+	return
+}
+
 func Compare(record *Record) {
-	compareAFlag := len(record.rightRecord.rightAs) > 0
-	compareCNameFlag := len(record.rightRecord.rightCNames) > 0
-	detectAFlag := len(record.detectAs) > 0
-	detectCNameFlag := len(record.detectCNames) > 0
+	compareAFlag := CheckEmptyStr(record.rightRecord.rightAs)
+	compareCNameFlag := CheckEmptyStr(record.rightRecord.rightCNames)
+	detectAFlag := CheckEmptyStr(record.detectAs)
+	detectCNameFlag := CheckEmptyStr(record.detectCNames)
 	//比对字段类型
 	//A/CNAME
 	if compareAFlag && compareCNameFlag {
@@ -99,7 +110,7 @@ func Compare(record *Record) {
 		return
 	} else if correctAFlag != FALSE && correctCNameFlag == FALSE {
 		//CNAME错误
-		record.result = "0-11-1-0-00"
+		record.result = "0-11-1-1-01"
 		return
 	} else if correctAFlag == FALSE && correctCNameFlag == FALSE {
 		//A记录与CNAME均错误
