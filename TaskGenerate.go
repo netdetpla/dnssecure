@@ -44,12 +44,14 @@ func GetTaskConfig() (task *Task, err error) {
 	//组合域名、递归服务器、正确值
 	domains := strings.Split(taskConfig[1], "+")
 	rightRecords, err := getRightValue(domains)
-	fmt.Print(rightRecords)
 	if err != nil {
         return nil, err
     }
 	reServers := strings.Split(taskConfig[2], "+")
 	for _, reServer := range reServers {
+		if len(reServer) == 0 {
+			continue
+		}
 		for _, rightRecord := range rightRecords {
 			record := new(Record)
 			record.rightRecord = rightRecord

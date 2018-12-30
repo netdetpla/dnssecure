@@ -1,6 +1,9 @@
 package main
 
-import "runtime"
+import (
+	"fmt"
+	"runtime"
+)
 
 const INIT = 0
 const TRUE = 1
@@ -112,6 +115,8 @@ func CompareBox(record *Record, index int) {
 
 func ControlCompareRoutine(tasks *Task) {
 	runtime.GOMAXPROCS(runtime.NumCPU())
+	InfoLog("ControlCompareRoutine-records")
+	fmt.Println(len(tasks.records))
 	for index, record := range tasks.records {
 		go CompareBox(record, index)
 	}

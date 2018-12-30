@@ -21,6 +21,9 @@ func ParseRR(rrs []dns.RR) (as []string, cNames []string) {
 			}
 		}
 	}
+	InfoLog("ParseRR")
+	fmt.Println(as)
+	fmt.Println(cNames)
 	return
 }
 
@@ -43,7 +46,6 @@ func SendDNSQuery(record *Record) {
 
 func ControlDNSQueryRoutine(tasks *Task) (err error){
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	fmt.Println(tasks.records)
 	for _, record := range tasks.records {
 		go SendDNSQuery(record)
 	}

@@ -7,12 +7,32 @@ import (
 	"time"
 )
 
-const LogPath = "/tmp/log/"
-const AppstatusPath = "/tmp/appstatus/"
+const (
+	LogPath       = "/tmp/log/"
+	AppstatusPath = "/tmp/appstatus/"
+	Info          = "[INFO][%s]%s"
+	Error         = "[ERROR][%s]%s"
+	Warning       = "[WARNING][%s]%s"
+)
+func GetTime() string{
+	return time.Now().Format("2006/01/02 15:04:05")
+}
 
-func CreateLogFile(logName string)  {
+func InfoLog(log string) {
+	fmt.Println(Info, GetTime(), log)
+}
+
+func ErrorLog(log string) {
+	fmt.Println(Error, GetTime(), log)
+}
+
+func WarningLog(log string)  {
+	fmt.Println(Warning, GetTime(), log)
+}
+
+func CreateLogFile(logName string) {
 	now := string(time.Now().Unix())
-	err := ioutil.WriteFile(LogPath + now + logName, []byte(""), 0644)
+	err := ioutil.WriteFile(LogPath+now+logName, []byte(""), 0644)
 	if err != nil {
 		os.Exit(10)
 	}
@@ -42,7 +62,7 @@ func TaskRunSuccess() {
 	CreateLogFile("-1301.log")
 }
 
-func TaskRunFail()  {
+func TaskRunFail() {
 	CreateLogFile("-1302.log")
 }
 
@@ -72,7 +92,7 @@ func ConnectFail() {
 
 func WriteSuccess2Appstatus() {
 	TaskSuccess()
-	err := ioutil.WriteFile(AppstatusPath + "0", []byte(""), 0644)
+	err := ioutil.WriteFile(AppstatusPath+"0", []byte(""), 0644)
 	if err != nil {
 		os.Exit(9)
 	}
@@ -81,7 +101,7 @@ func WriteSuccess2Appstatus() {
 func WriteError2Appstatus(errorInfo string, errorCode int) {
 	fmt.Println(errorInfo)
 	TaskFail()
-	err := ioutil.WriteFile(AppstatusPath + "1", []byte(errorInfo), 0644)
+	err := ioutil.WriteFile(AppstatusPath+"1", []byte(errorInfo), 0644)
 	if err != nil {
 		os.Exit(9)
 	}
