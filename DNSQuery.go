@@ -15,7 +15,8 @@ func ParseRR(rrs []dns.RR) (as []string, cNames []string) {
 		fmt.Println(rrElements)
 		if len(rrElements) == 5 {
 			if rrElements[3] == "CNAME" {
-				cNames = append(cNames, rrElements[4])
+				cName := string([]rune(rrElements[4])[:len(rrElements[4]) - 1])
+				cNames = append(cNames, cName)
 			} else if rrElements[3] == "A" {
 				as = append(as, rrElements[4])
 			}

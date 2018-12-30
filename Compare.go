@@ -12,19 +12,25 @@ const FALSE = -1
 var compareQuit = make(chan int)
 
 func CompareList(detects []string, rights []string) (correctFlag int) {
+	InfoLog("Compare")
+	fmt.Println(detects)
+	fmt.Println(rights)
 	correctFlag = TRUE
-	for detect := range detects {
+	for _, detect := range detects {
 		singleCorrectFlag := false
-		for right := range rights {
+		for _, right := range rights {
+			fmt.Println(detect, right)
 			if detect == right {
 				singleCorrectFlag = true
 				break
 			}
 		}
+		fmt.Println(singleCorrectFlag)
 		if !singleCorrectFlag {
 			correctFlag = FALSE
 		}
 	}
+	fmt.Println(correctFlag)
 	return
 }
 
