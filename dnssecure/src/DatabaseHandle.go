@@ -31,9 +31,12 @@ func getRightValue(domains []string) (rightRecords []*RightRecord, err error) {
 	db, err := sql.Open(
 		"mysql",
 		//"root:123456@tcp(192.168.226.11:3306)/cncert_initiative_probe_system")
-		"zyq:123456@tcp(10.96.129.6:3306)/cncert_initiative_probe_system")
+		"zyq:123456@tcp(10.96.129.6:3306)/cncert_initiative_probe_system?timeout=20s")
 
 	if err != nil {
+		return nil, err
+	}
+	if err = db.Ping(); err != nil {
 		return nil, err
 	}
 	//查询数据

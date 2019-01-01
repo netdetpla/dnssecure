@@ -35,9 +35,6 @@ func SendDNSQuery(record *Record) {
 	if err != nil {
 		if strings.Index(err.Error(), "timeout") >= 0 {
 			record.timeoutFlag = true
-		} else {
-			quit <- err
-            return 
 		}
 	} else {
 		record.timeoutFlag = false

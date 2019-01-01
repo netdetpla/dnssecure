@@ -20,15 +20,15 @@ func GetTime() string{
 }
 
 func InfoLog(log string) {
-	fmt.Println(Info, GetTime(), log)
+	fmt.Println(Info, GetTime(), log + "\n")
 }
 
 func ErrorLog(log string) {
-	fmt.Println(Error, GetTime(), log)
+	fmt.Println(Error, GetTime(), log + "\n")
 }
 
 func WarningLog(log string)  {
-	fmt.Println(Warning, GetTime(), log)
+	fmt.Println(Warning, GetTime(), log + "\n")
 }
 
 func CreateLogFile(logName string) {
