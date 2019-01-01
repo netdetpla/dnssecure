@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"time"
+	"strconv"
 )
 
 const (
@@ -31,7 +32,7 @@ func WarningLog(log string)  {
 }
 
 func CreateLogFile(logName string) {
-	now := string(time.Now().Unix())
+	now := strconv.FormatInt(time.Now().Unix(), 10)
 	err := ioutil.WriteFile(LogPath+now+logName, []byte(""), 0644)
 	if err != nil {
 		os.Exit(10)

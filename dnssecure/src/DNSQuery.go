@@ -37,12 +37,14 @@ func SendDNSQuery(record *Record) {
 			record.timeoutFlag = true
 		} else {
 			quit <- err
+            return 
 		}
 	} else {
 		record.timeoutFlag = false
 		record.detectAs, record.detectCNames = ParseRR(in.Answer)
 	}
 	quit <- nil
+    return
 }
 
 func ControlDNSQueryRoutine(tasks *Task) (err error){
