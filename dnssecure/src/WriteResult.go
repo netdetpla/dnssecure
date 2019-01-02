@@ -6,6 +6,7 @@ import (
 	"runtime"
 	"strings"
 	"time"
+	"strconv"
 )
 
 const ResultPath  = "/tmp/result/"
@@ -15,7 +16,7 @@ func GenerateResultLine(record *Record, taskID string, taskName string) {
 	var resultList []string
 	detectAsStr := strings.Join(record.detectAs, "+")
 	detectCNamesStr := strings.Join(record.detectCNames, "+")
-	now := string(time.Now().Unix())
+	now := strconv.FormatInt(time.Now().Unix(), 10)
 	resultList = append(resultList,
 		taskID, taskName, record.rightRecord.domain, record.reServer, record.compareType,
 		detectAsStr + "/" + detectCNamesStr, record.result, now + "\n")
@@ -35,10 +36,12 @@ func ControlWriteResultRoutine(tasks *Task) (err error){
 	}
 	close(resultLine)
 	err = os.Mkdir(ResultPath, 0777)
-	if !os.IsExist(err) {
+	if err != nil && !os.IsExist(err) {
 		return
 	}
-	err = ioutil.WriteFile(ResultPath + tasks.taskID + ".result",
-		[]byte(resultContent), 0644)
+    totalNum := len(tasks.records)
+    err = ioutil.WriteFile(ResultPath + tasks.taskID + ".result",
+       []byte(tasks.taskID + "|" + strconv.Itoa(totalNum) + "\n" + resultContent), 0644)
+
 	return
 }
