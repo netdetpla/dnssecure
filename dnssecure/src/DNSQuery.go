@@ -5,6 +5,7 @@ import (
 	"github.com/miekg/dns"
 	"runtime"
 	"strings"
+	"time"
 )
 
 var quit = make(chan error)
@@ -34,7 +35,9 @@ func SendDNSQuery(record *Record) {
 	m.SetQuestion(dns.Fqdn(record.rightRecord.domain), dns.TypeA)
 	errCount := 3
 Start:
-	in, err := dns.Exchange(m, record.reServer+":53")
+	client := dns.Client{Net: "udp", Timeout: 10 * time.Second}
+	in, _, err := client.Exchange(m, record.reServer+":53")
+	//in, err := dns.Exchange(m, record.reServer+":53")
 	if err != nil {
 		if errCount == 0 {
 			record.timeoutFlag = true
