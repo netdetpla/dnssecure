@@ -16,6 +16,11 @@ func CompareList(detects []string, rights []string) (correctFlag int) {
 	fmt.Println(detects)
 	fmt.Println(rights)
 	correctFlag = TRUE
+	if !CheckEmptyStr(detects) {
+		correctFlag = FALSE
+		return
+	}
+
 	for _, detect := range detects {
 		singleCorrectFlag := false
 		for _, right := range rights {
@@ -37,7 +42,7 @@ func CompareList(detects []string, rights []string) (correctFlag int) {
 func CheckEmptyStr(strList []string) (isEmpty bool){
 	isEmpty = false
 	for _, s := range strList {
-		if len(s) != 0{
+		if len(s) != 0 {
 			isEmpty = true
 			return
 		}
@@ -49,7 +54,9 @@ func Compare(record *Record) {
 	compareAFlag := CheckEmptyStr(record.rightRecord.rightAs)
 	compareCNameFlag := CheckEmptyStr(record.rightRecord.rightCNames)
 	detectAFlag := CheckEmptyStr(record.detectAs)
-	detectCNameFlag := CheckEmptyStr(record.detectCNames)
+	detectCNameFlag := CheckEmptyStr(record.detectCNames)	
+	fmt.Println("compare flag")
+	fmt.Println(compareAFlag, compareCNameFlag)
 	//比对字段类型
 	//A/CNAME
 	if compareAFlag && compareCNameFlag {
@@ -89,38 +96,43 @@ func Compare(record *Record) {
 		return
 	}
 	//A记录与CNAME均需要比较，其余情况
-	if compareAFlag && compareCNameFlag && detectAFlag && detectCNameFlag {
+	if compareAFlag && compareCNameFlag {
 		//比较A记录
 		correctAFlag = CompareList(record.detectAs, record.rightRecord.rightAs)
 		//比较CNAME
 		correctCNameFlag = CompareList(record.detectCNames, record.rightRecord.rightCNames)
-	} else if compareAFlag && detectAFlag {
+	} else if compareAFlag {
 		//比较A记录
 		correctAFlag = CompareList(record.detectAs, record.rightRecord.rightAs)
-	} else if compareCNameFlag && detectCNameFlag {
+	} else if compareCNameFlag {
 		//比较CNAME
 		correctCNameFlag = CompareList(record.detectCNames, record.rightRecord.rightCNames)
-	} else if compareAFlag || compareCNameFlag {
+	} else {
 		//无效应答（无法比较）
 		record.result = "0-11-0-0-10"
 		return
 	}
+	fmt.Println("correct flag")
+	fmt.Println(correctAFlag, correctCNameFlag)
 	//结果判断
-	if correctAFlag != FALSE && correctCNameFlag != FALSE {
+	if correctAFlag == TRUE && correctCNameFlag == TRUE {
 		//比对一致
 		record.result = "0-11-1-0-00"
-		return
-	} else if correctAFlag == FALSE && correctCNameFlag != FALSE {
-		//A记录错误
-		record.result = "0-11-1-1-10"
-		return
-	} else if correctAFlag != FALSE && correctCNameFlag == FALSE {
-		//CNAME错误
-		record.result = "0-11-1-1-01"
 		return
 	} else if correctAFlag == FALSE && correctCNameFlag == FALSE {
 		//A记录与CNAME均错误
 		record.result = "0-11-1-1-11"
+		return
+	} else if correctAFlag == FALSE {
+		//A记录错误
+		record.result = "0-11-1-1-10"
+		return
+	} else if correctCNameFlag == FALSE {
+		//CNAME错误
+		record.result = "0-11-1-1-01"
+		return
+	} else {
+		record.result = "0-11-0-0-10"
 		return
 	}
 }

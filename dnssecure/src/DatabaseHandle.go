@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"strings"
-	//"fmt"
+	"fmt"
 )
 
 type RightRecord struct {
@@ -31,13 +31,15 @@ func getRightValue(domains []string) (rightRecords []*RightRecord, err error) {
 	db, err := sql.Open(
 		"mysql",
 		//"root:123456@tcp(192.168.226.11:3306)/cncert_initiative_probe_system")
-		"zyq:123456@tcp(10.96.129.6:3306)/cncert_initiative_probe_system?timeout=20s")
+		"root:123456@tcp(10.96.129.133:3306)/cncert_initiative_probe_system?timeout=20s")
 
 	if err != nil {
-		return nil, err
+		return
 	}
+	//db.SetMaxOpenConns(5)
+	//db.SetMaxIdleConns(5)
 	if err = db.Ping(); err != nil {
-		return nil, err
+		return
 	}
 	//查询数据
 	querySQL := "SELECT CNAME, A FROM domain_library WHERE domain_name=?"
@@ -47,8 +49,8 @@ func getRightValue(domains []string) (rightRecords []*RightRecord, err error) {
 			continue
 		}
 		rows, err := db.Query(querySQL, domain)
-		defer rows.Close()
 		if err != nil {
+			fmt.Println(err.Error())
 			return nil, err
 		}
 		if !rows.Next() {
@@ -60,6 +62,7 @@ func getRightValue(domains []string) (rightRecords []*RightRecord, err error) {
 		)
 		err = rows.Scan(&rightCNamesStr, &rightAsStr)
 		if err != nil {
+			fmt.Println(err.Error())
 			return nil, err
 		}
 		rightRecord := &RightRecord{
@@ -68,6 +71,7 @@ func getRightValue(domains []string) (rightRecords []*RightRecord, err error) {
 			rightCNames: SplitCNames(rightCNamesStr),
 		}
 		rightRecords = append(rightRecords, rightRecord)
+		rows.Close()
 	}
 	return
 }

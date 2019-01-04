@@ -1,41 +1,52 @@
 package main
 
 import (
+	"fmt"
 	"github.com/sparrc/go-ping"
 	"time"
 )
 
-func PingCheck(host string) (packetLoss float64, err error) {
-	pinger, err := ping.NewPinger(host)
+func PingCheck(addr string) (checkFlag int, err error){
+	pinger, err := ping.NewPinger(addr)
 	if err != nil {
-		return 100, err
+		fmt.Println(err.Error())
+		return 0, err
 	}
 	pinger.SetPrivileged(true)
-	pinger.Count = 10
-	pinger.Timeout = time.Duration(1*time.Second)
-	pinger.Run()
-	stats := pinger.Statistics()
-	packetLoss = stats.PacketLoss
+	pinger.Count = 1
+	pinger.Timeout = time.Duration(2 * time.Second)
+	pinger.Run()                 // blocks until finished
+	stats := pinger.Statistics() // get send/receive/rtt stats
+	if stats.PacketLoss > 0 {
+		checkFlag = 0
+	} else {
+		checkFlag = 1
+	}
 	return
 }
 
+func MultiPingCheck(addr string, count int) (bool, error) {
+	recvCount := 0
+	var err error
+	for i := 0; i < count; i++ {
+		var tmpCount int
+		tmpCount, err = PingCheck(addr)
+		recvCount += tmpCount
+	}
+	return recvCount != 0, err
+}
+
 func NetCheck() (netCheckFlag bool, err error) {
-	netCheckFlag = false
-	packetLoss, err := PingCheck("8.8.8.8")
+	netCheckFlag, err = MultiPingCheck("8.8.8.8", 10)
 	if err != nil {
 		return false, err
 	}
-	if packetLoss <= 90 {
-		netCheckFlag = true
+	if netCheckFlag {
 		return
 	}
-	packetLoss, err = PingCheck("114.114.114.114")
+	netCheckFlag, err = MultiPingCheck("114.114.114.114", 10)
 	if err != nil {
 		return false, err
-	}
-	if packetLoss <= 90 {
-		netCheckFlag = true
-		return
 	}
 	return
 }

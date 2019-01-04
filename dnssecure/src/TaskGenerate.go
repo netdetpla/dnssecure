@@ -30,10 +30,12 @@ func GetTaskConfig() (task *Task, err error) {
 	task = new(Task)
 	taskConfigBase64, err := ioutil.ReadFile(ConfPath)
 	if err != nil {
+		fmt.Println(err.Error())
         return nil, err
     }
 	taskConfigB, err := base64.StdEncoding.DecodeString(string(taskConfigBase64))
 	if err != nil {
+		fmt.Println(err.Error())
         return nil, err
     }
 	taskConfig := strings.Split(string(taskConfigB), ",")
@@ -45,6 +47,7 @@ func GetTaskConfig() (task *Task, err error) {
 	domains := strings.Split(taskConfig[1], "+")
 	rightRecords, err := getRightValue(domains)
 	if err != nil {
+		fmt.Println(err.Error())
         return nil, err
     }
 	reServers := strings.Split(taskConfig[2], "+")
