@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io/ioutil"
 	"os"
 	"runtime"
 	"strings"
@@ -40,8 +39,17 @@ func ControlWriteResultRoutine(tasks *Task) (err error){
 		return
 	}
     totalNum := len(tasks.records)
-    err = ioutil.WriteFile(ResultPath + tasks.taskID + ".result",
-       []byte(tasks.taskID + "|" + strconv.Itoa(totalNum) + "\n" + resultContent), 0644)
-
+    //err = ioutil.WriteFile(ResultPath + tasks.taskID + ".result",
+    //   []byte(tasks.taskID + "|" + strconv.Itoa(totalNum) + "\n" + resultContent), 0644)
+	f, err := os.OpenFile(ResultPath + tasks.taskID + ".result", os.O_WRONLY | os.O_TRUNC | os.O_CREATE, os.ModePerm)
+	defer f.Close()
+	if err != nil {
+		return 
+	} else {
+		_, err = f.Write([]byte(tasks.taskID + "|" + strconv.Itoa(totalNum) + "\n" + resultContent))
+		if err != nil {
+			return 
+		}
+	}
 	return
 }
