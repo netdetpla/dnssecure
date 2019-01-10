@@ -41,6 +41,6 @@ func ControlWriteResultRoutine(tasks *Task) (err error){
 	}
     totalNum := len(tasks.records)
 	err = ioutil.WriteFile(ResultPath + tasks.taskID + ".result",
-        []byte(tasks.taskID + "|" + strconv.Itoa(totalNum) + "\n" + resultContent + "|" + tasks.subID), 0644)
+        []byte(tasks.taskID + "|" + strconv.Itoa(totalNum) + "|" + tasks.subID + "\n" + resultContent), 0644)
 	return
 }

@@ -77,7 +77,7 @@ func main() {
 	duration := endTime - startTime
 	_ = SendUDP(tasks.taskID, tasks.subID, "len: "+strconv.Itoa(len(tasks.records))+"; duration: "+strconv.FormatInt(duration, 10))
 	//写状态文件
-	//var (
+	var (
 	//	//err        error
 	//	sftpClient *sftp.Client
 	//)
