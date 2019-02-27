@@ -55,8 +55,6 @@ func Compare(record *Record) {
 	compareCNameFlag := CheckEmptyStr(record.rightRecord.rightCNames)
 	detectAFlag := CheckEmptyStr(record.detectAs)
 	detectCNameFlag := CheckEmptyStr(record.detectCNames)	
-	fmt.Println("compare flag")
-	fmt.Println(compareAFlag, compareCNameFlag)
 	//比对字段类型
 	//A/CNAME
 	if compareAFlag && compareCNameFlag {
@@ -66,14 +64,14 @@ func Compare(record *Record) {
 	} else if compareCNameFlag {
 		record.compareType = "CNAME"
 	}
-	//查询超时
-	if record.timeoutFlag {
-		record.result = "0-00-0-0-00"
-		return
-	}
 	//未获取到配置
 	if !compareAFlag && !compareCNameFlag {
 		record.result = "0-00-1-0-00"
+		return
+	}
+	//查询超时
+	if record.timeoutFlag {
+		record.result = "0-00-0-0-00"
 		return
 	}
 	//无效应答
@@ -89,11 +87,8 @@ func Compare(record *Record) {
 		if correctCNameFlag == TRUE {
 			//CNAME正确&A记录空
 			record.result = "1-01-1-1-001"
-		} else {
-			//CNAME错误
-			record.result = "0-11-1-1-01"
+			return
 		}
-		return
 	}
 	//A记录与CNAME均需要比较，其余情况
 	if compareAFlag && compareCNameFlag {
@@ -112,10 +107,8 @@ func Compare(record *Record) {
 		record.result = "0-11-0-0-10"
 		return
 	}
-	fmt.Println("correct flag")
-	fmt.Println(correctAFlag, correctCNameFlag)
 	//结果判断
-	if correctAFlag == TRUE && correctCNameFlag == TRUE {
+	if correctAFlag + correctCNameFlag > 0 {
 		//比对一致
 		record.result = "0-11-1-0-00"
 		return

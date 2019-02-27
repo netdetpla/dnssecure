@@ -27,6 +27,22 @@ type Task struct {
 	records []*Record
 }
 
+func GetSubID() (subID string, err error) {
+	taskConfigBase64, err := ioutil.ReadFile(ConfPath)
+	if err != nil {
+		fmt.Println(err.Error())
+        return "", err
+    }
+	taskConfigB, err := base64.StdEncoding.DecodeString(string(taskConfigBase64))
+	if err != nil {
+		fmt.Println(err.Error())
+        return "", err
+    }
+	taskConfig := strings.Split(string(taskConfigB), ",")
+	subID = taskConfig[6]
+	return 
+}
+
 func GetTaskConfig() (task *Task, err error) {
 	task = new(Task)
 	taskConfigBase64, err := ioutil.ReadFile(ConfPath)

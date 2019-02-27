@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+var endChan = make(chan bool, 1)
+
 func PingCheck(addr string) (checkFlag int, err error){
 	pinger, err := ping.NewPinger(addr)
 	if err != nil {
@@ -36,17 +38,41 @@ func MultiPingCheck(addr string, count int) (bool, error) {
 	return recvCount != 0, err
 }
 
-func NetCheck() (netCheckFlag bool, err error) {
-	netCheckFlag, err = MultiPingCheck("8.8.8.8", 10)
+func NetCheckProcess() {
+	netCheckFlag, err := MultiPingCheck("8.8.8.8", 10)
+	//netCheckFlag, err := MultiPingCheck("2.3.4.2", 60)
 	if err != nil {
-		return false, err
+		endChan <- false
+		return
 	}
 	if netCheckFlag {
+		endChan <- true
 		return
 	}
 	netCheckFlag, err = MultiPingCheck("114.114.114.114", 10)
 	if err != nil {
-		return false, err
+		endChan <- false
+		return 
 	}
-	return
+	endChan <- netCheckFlag
+}
+
+func NetCheck() (netCheckFlag int) {
+	go NetCheckProcess()
+	clock := time.NewTimer(time.Second)
+	for {
+		clock.Reset(time.Second * 60)
+		select {
+		case netFlag := <-endChan:
+			fmt.Println("ping check end")
+			if netFlag {
+				return 1
+			} else {
+				return 0
+			}
+		case <-clock.C:
+			fmt.Println("ping thread timeout")
+			return -1
+		}
+	}
 }
