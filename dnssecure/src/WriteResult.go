@@ -17,9 +17,8 @@ func GenerateResultLine(record *Record, taskID string, taskName string) {
 	detectAsStr := strings.Join(record.detectAs, "+")
 	detectCNamesStr := strings.Join(record.detectCNames, "+")
 	now := strconv.FormatInt(time.Now().Unix(), 10)
-	resultList = append(resultList,
-		taskID, taskName, record.rightRecord.domain, record.reServer, record.compareType,
-		detectAsStr + "/" + detectCNamesStr, record.result, now + "\n")
+	resultList = append(resultList,	taskID, taskName, record.domain, record.reServer,
+		detectAsStr + "/" + detectCNamesStr, now + "\n")
 	resultStr := strings.Join(resultList, ";")
 	resultLine <- resultStr
 	return

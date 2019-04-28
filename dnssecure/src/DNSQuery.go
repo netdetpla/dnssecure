@@ -24,7 +24,6 @@ func ParseRR(rrs []dns.RR) (as []string, cNames []string) {
 			}
 		}
 	}
-	InfoLog("ParseRR")
 	fmt.Println(as)
 	fmt.Println(cNames)
 	return
@@ -32,7 +31,7 @@ func ParseRR(rrs []dns.RR) (as []string, cNames []string) {
 
 func SendDNSQuery(record *Record) {
 	m := new(dns.Msg)
-	m.SetQuestion(dns.Fqdn(record.rightRecord.domain), dns.TypeA)
+	m.SetQuestion(dns.Fqdn(record.domain), dns.TypeA)
 	errCount := 3
 Start:
 	client := dns.Client{Net: "udp", Timeout: 10 * time.Second}

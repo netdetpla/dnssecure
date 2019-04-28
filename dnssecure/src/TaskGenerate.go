@@ -2,45 +2,27 @@ package main
 
 import (
 	"encoding/base64"
+	"fmt"
 	"io/ioutil"
 	"strings"
-	"fmt"
 )
 
 const ConfPath = "/tmp/conf/busi.conf"
 
 type Record struct {
-	rightRecord *RightRecord
-	reServer string
-	detectAs []string
+	domain       string
+	reServer     string
+	detectAs     []string
 	detectCNames []string
-	timeoutFlag bool
-	result string
-	compareType string
+	timeoutFlag  bool
 }
 
 type Task struct {
-	taskID string
+	taskID   string
 	taskName string
-	uuid string
-	subID string
-	records []*Record
-}
-
-func GetSubID() (subID string, err error) {
-	taskConfigBase64, err := ioutil.ReadFile(ConfPath)
-	if err != nil {
-		fmt.Println(err.Error())
-        return "", err
-    }
-	taskConfigB, err := base64.StdEncoding.DecodeString(string(taskConfigBase64))
-	if err != nil {
-		fmt.Println(err.Error())
-        return "", err
-    }
-	taskConfig := strings.Split(string(taskConfigB), ",")
-	subID = taskConfig[6]
-	return 
+	uuid     string
+	subID    string
+	records  []*Record
 }
 
 func GetTaskConfig() (task *Task, err error) {
@@ -48,13 +30,13 @@ func GetTaskConfig() (task *Task, err error) {
 	taskConfigBase64, err := ioutil.ReadFile(ConfPath)
 	if err != nil {
 		fmt.Println(err.Error())
-        return nil, err
-    }
+		return nil, err
+	}
 	taskConfigB, err := base64.StdEncoding.DecodeString(string(taskConfigBase64))
 	if err != nil {
 		fmt.Println(err.Error())
-        return nil, err
-    }
+		return nil, err
+	}
 	taskConfig := strings.Split(string(taskConfigB), ",")
 	fmt.Println(taskConfig)
 
@@ -62,24 +44,18 @@ func GetTaskConfig() (task *Task, err error) {
 
 	//组合域名、递归服务器、正确值
 	domains := strings.Split(taskConfig[1], "+")
-	rightRecords, err := getRightValue(domains)
-	if err != nil {
-		fmt.Println(err.Error())
-        return nil, err
-    }
 	reServers := strings.Split(taskConfig[2], "+")
 	for _, reServer := range reServers {
 		if len(reServer) == 0 {
 			continue
 		}
-		for _, rightRecord := range rightRecords {
+		for _, domain := range domains {
 			record := new(Record)
-			record.rightRecord = rightRecord
+			record.domain = domain
 			record.reServer = reServer
 			task.records = append(task.records, record)
 		}
 	}
-
 	task.taskName = taskConfig[4]
 	task.uuid = taskConfig[5]
 	task.subID = taskConfig[6]

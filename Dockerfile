@@ -1,5 +1,5 @@
 FROM scratch
 
-ADD ["bin/dnssecure-bin", "/"]
+ADD ["bin/dnssecure.b", "/"]
 
-CMD ["/dnssecure-bin"]
+CMD ["/dnssecure.b"]

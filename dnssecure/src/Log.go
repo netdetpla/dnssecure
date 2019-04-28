@@ -4,38 +4,22 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"time"
 	"strconv"
+	"time"
 )
 
 const (
 	LogPath       = "/tmp/log/"
 	AppstatusPath = "/tmp/appstatus/"
-	Info          = "[INFO][%s]%s"
-	Error         = "[ERROR][%s]%s"
-	Warning       = "[WARNING][%s]%s"
 )
 func GetTime() string{
 	return time.Now().Format("2006/01/02 15:04:05")
-}
-
-func InfoLog(log string) {
-	fmt.Println(Info, GetTime(), log + "\n")
-}
-
-func ErrorLog(log string) {
-	fmt.Println(Error, GetTime(), log + "\n")
-}
-
-func WarningLog(log string)  {
-	fmt.Println(Warning, GetTime(), log + "\n")
 }
 
 func CreateLogFile(logName string) {
 	now := strconv.FormatInt(time.Now().Unix(), 10)
 	err := ioutil.WriteFile(LogPath+now+logName, []byte(""), 0644)
 	if err != nil {
-		_ = SendUDP("", "", logName + ", errcode: " + err.Error())	
 		os.Exit(10)
 	}
 }
