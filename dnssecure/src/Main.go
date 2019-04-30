@@ -58,14 +58,14 @@ func main() {
 		WriteError2Appstatus(err.Error(), 9)
 	}
 	//网络检查
-	netCheckFlag := NetCheck()
-	if netCheckFlag == 0 {
-		ConnectFail()
-		WriteError2Appstatus("Can not connect to the Internet.", 22)
-	} else if netCheckFlag == -1 {
-		ConnectFail()
-        WriteError2Appstatus("Ping check timeout.", 21)
-	}
+	//netCheckFlag := NetCheck()
+	//if netCheckFlag == 0 {
+	//	ConnectFail()
+	//	WriteError2Appstatus("Can not connect to the Internet.", 22)
+	//} else if netCheckFlag == -1 {
+	//	ConnectFail()
+    //    WriteError2Appstatus("Ping check timeout.", 21)
+	//}
 	//任务开始
 	TaskStart()
 	//读取配置
