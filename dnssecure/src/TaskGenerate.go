@@ -55,7 +55,7 @@ func GetTaskConfig() (task *Task, err error) {
 			task.records = append(task.records, record)
 		}
 	}
-	task.taskName = taskConfig[4]
-	task.uuid = taskConfig[5]
+	task.taskName = taskConfig[3]
+	task.uuid = taskConfig[4]
 	return
 }

@@ -19,6 +19,7 @@ func PingCheck(addr string) (checkFlag int, err error){
 	pinger.Timeout = time.Duration(2 * time.Second)
 	pinger.Run()                 // blocks until finished
 	stats := pinger.Statistics() // get send/receive/rtt stats
+	fmt.Println(stats)
 	if stats.PacketLoss > 0 {
 		checkFlag = 0
 	} else {
