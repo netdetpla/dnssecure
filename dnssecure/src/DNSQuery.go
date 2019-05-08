@@ -12,6 +12,7 @@ var quit = make(chan error)
 var ctrl = make(chan int, 100)
 
 func ParseRR(rrs []dns.RR) (as []string, cNames []string) {
+	fmt.Println(rrs)
 	for _, rr := range rrs {
 		rrElements := strings.Split(rr.String(), "\t")
 		fmt.Println(rrElements)
@@ -34,12 +35,14 @@ func SendDNSQuery(record *Record) {
 	m.SetQuestion(dns.Fqdn(record.domain), dns.TypeA)
 	errCount := 3
 Start:
-	client := dns.Client{Net: "udp", Timeout: 10 * time.Second}
+	client := dns.Client{Net: "udp", Timeout: 120 * time.Second}
 	in, _, err := client.Exchange(m, record.reServer+":53")
 	//in, err := dns.Exchange(m, record.reServer+":53")
 	if err != nil {
+		fmt.Println(err.Error())
 		if errCount == 0 {
 			record.timeoutFlag = true
+			fmt.Println("time out")
 			<-ctrl
 			quit <- nil
 			return
