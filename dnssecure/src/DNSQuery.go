@@ -35,7 +35,7 @@ func SendDNSQuery(record *Record) {
 	m.SetQuestion(dns.Fqdn(record.domain), dns.TypeA)
 	errCount := 3
 Start:
-	client := dns.Client{Net: "udp", Timeout: 120 * time.Second}
+	client := dns.Client{Net: "udp", Timeout: 10 * time.Second}
 	in, _, err := client.Exchange(m, record.reServer+":53")
 	//in, err := dns.Exchange(m, record.reServer+":53")
 	if err != nil {
