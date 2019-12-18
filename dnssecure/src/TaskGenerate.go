@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/base64"
 	"fmt"
 	"io/ioutil"
 	"strings"
@@ -26,12 +25,12 @@ type Task struct {
 
 func GetTaskConfig() (task *Task, err error) {
 	task = new(Task)
-	taskConfigBase64, err := ioutil.ReadFile(ConfPath)
-	if err != nil {
-		fmt.Println(err.Error())
-		return nil, err
-	}
-	taskConfigB, err := base64.StdEncoding.DecodeString(string(taskConfigBase64))
+	taskConfigB, err := ioutil.ReadFile(ConfPath)
+	//if err != nil {
+	//	fmt.Println(err.Error())
+	//	return nil, err
+	//}
+	//taskConfigB, err := base64.StdEncoding.DecodeString(string(taskConfigBase64))
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil, err
